@@ -78,15 +78,6 @@ add chain=prerouting connection-mark=speedtest-conn \
 
 ```
 # جدول التوجيه + المسار (RouterOS 7) — بدّل 10.10.10.1 بـ gateway خطك العراقي
-/routing table
-add name=via-IQ fib
-/ip route
-add dst-address=0.0.0.0/0 gateway=10.10.10.1 routing-table=via-IQ comment="IQ uplink"
-
-# NAT (تجاهله لو عندك masquerade عام على كل الخطوط)
-/ip firewall nat
-add chain=srcnat connection-mark=speedtest-conn action=masquerade comment="NAT via IQ"
-```
 
 > 💡 **لتوحيد القائمة الثابتة مع المتعلّمة:** بدّل `Speedtest-IPs` بـ `Check-Host` في القاعدتين (أ) و(ب)، حتى تُوجَّه الـ 390 موقع الثابتة أيضاً (مو بس المتعلّمة).
 >
