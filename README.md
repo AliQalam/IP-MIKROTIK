@@ -50,6 +50,20 @@
 2. افتح **New Terminal** 
 ### الطريقة 3 — نسخ ولصق
 افتح أي ملف، انسخ محتواه، والصقه في **New Terminal**.
+/ip firewall mangle
+# (أ) Layer7 يتعلّم IPات مواقع السرعة ويحطها بقائمة
+add chain=prerouting protocol=tcp dst-port=80,443 layer7-protocol=speedtest \
+    connection-mark=no-mark action=add-dst-to-address-list \
+    address-list=Speedtest-IPs address-list-timeout=1d comment="Learn speedtest IPs"
+
+# (ب) أي اتصال رايح لهذي الـ IPات نوسمه
+add chain=prerouting dst-address-list=Speedtest-IPs connection-mark=no-mark \
+    action=mark-connection new-connection-mark=speedtest-conn passthrough=yes
+
+# (ج) الاتصال الموسوم نوجّهه عبر الخط العراقي
+add chain=prerouting connection-mark=speedtest-conn \
+    action=mark-routing new-routing-mark=via-IQ passthrough=no
+
 
 > 💡 ملاحظة: داخل ملفات `.rsc` نستخدم `\\.` (شرطتين). إذا أدخلت الـ regex يدوياً في حقل Winbox اكتب `\.` (شرطة واحدة).
 
