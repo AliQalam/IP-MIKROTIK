@@ -33,8 +33,8 @@
 | `CHECK-HOST/CHECK-HOST.rsc` | قائمة ثابتة ~390 دومين | Filter للحظر أو Mangle للتوجيه |
 | `CHECK-HOST/BLOCK-IP(STARLINK)` | حظر/معالجة عناوين Starlink | Filter / Address-list |
 | `BLOCK/BLOCK-PORT` | حظر منافذ محددة | Filter (forward) |
-| `PORT/watsapp-not` | حظر واتساب (منافذ/عناوين) | Filter / Address-list |
-| `RAW/RAW.rsc` | قواعد RAW للأداء/الحماية | Firewall RAW |
+| `PORT/watsapp-not` |  واتساب (منافذ/عناوين) | Filter / Address-list |
+| `RAW/RAW.rsc` | قواعد RAW الاستخراج التلقائي | Firewall RAW |
 
 > 💡 **ملاحظة استيراد:** أمر `/import` يحتاج امتداد `.rsc`. الملفات بدون امتداد (مثل `BLOCK-PORT` و `watsapp-not`) إمّا تعيد تسميتها بـ `.rsc` أو تنسخ محتواها وتلصقه في الـ Terminal.
 
@@ -163,8 +163,8 @@ Modular MikroTik RouterOS toolkit (🚧 evolving):
 | `CHECK-HOST/Layer7.rsc` | Layer7 SNI signature for IP/ISP/speed sites (named `speedtest`) |
 | `CHECK-HOST/CHECK-HOST.rsc` | Static address-list (~390 domains) |
 | `CHECK-HOST/BLOCK-IP(STARLINK)` | Block Starlink IP ranges |
-| `BLOCK/BLOCK-PORT` | Block specific ports |
-| `PORT/watsapp-not` | Block WhatsApp |
+| `BLOCK/BLOCK-PORT` |  specific ports |
+| `PORT/watsapp-not` |  WhatsApp |
 | `RAW/RAW.rsc` | RAW firewall rules |
 
 **Mangle (policy-route detected traffic via the IQ uplink) — used together with `Layer7.rsc` (`speedtest`), a `via-IQ` routing table/route, and a masquerade NAT rule.** See the Mangle block above. Requires RouterOS 7 for routing; replace the gateway IP before importing.
