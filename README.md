@@ -56,7 +56,7 @@
 # (أ) Layer7 يتعلّم IPات مواقع السرعة ويحطها بقائمة
 add chain=prerouting protocol=tcp dst-port=80,443 layer7-protocol=speedtest \
     connection-mark=no-mark action=add-dst-to-address-list \
-    address-list=Speedtest-IPs address-list-timeout=1d comment="Learn speedtest IPs"
+    address-list=Speedtest-IPs comment="Learn speedtest IPs"
 
 # (ب) أي اتصال رايح لهذي الـ IPات نوسمه
 add chain=prerouting dst-address-list=Speedtest-IPs connection-mark=no-mark \
@@ -64,7 +64,7 @@ add chain=prerouting dst-address-list=Speedtest-IPs connection-mark=no-mark \
 
 # (ج) الاتصال الموسوم نوجّهه عبر الخط العراقي
 add chain=prerouting connection-mark=speedtest-conn \
-    action=mark-routing new-routing-mark=via-IQ passthrough=no
+    action=mark-routing new-routing-mark=IQ passthrough=no
 ```
 
 ### 🔗 يعتمد على (لازم تكون موجودة وإلا ما يشتغل)
