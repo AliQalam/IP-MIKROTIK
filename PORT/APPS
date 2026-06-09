@@ -1,0 +1,200 @@
+# 📱 منافذ التطبيقات (App Ports)
+
+> ⚠️ أغلب التطبيقات على **TCP 443 (HTTPS)** وهو مشترك مع كل الإنترنت — ما ينفع لحظر تطبيق واحد؛ استخدم address-list أو Layer7. المنافذ المميِّزة عادةً هي **UDP المكالمات**. TCP و UDP = قاعدتين منفصلتين بالمايكروتك.
+
+## 💬 المراسلة والمكالمات
+
+**WhatsApp**
+TCP: 443, 5222, 5223, 5228
+UDP: 3478, 45395, 49152-65535
+
+**Telegram**
+TCP: 443, 80, 5222
+UDP: 3478-3481, 49152-65535
+
+**Signal**
+TCP: 443
+UDP: 3478, 49152-65535
+
+**Discord**
+TCP: 443
+UDP: 50000-65535, 3478
+
+**Viber**
+TCP: 443, 5242, 4244
+UDP: 5242, 5243, 4244, 9785
+
+**Facebook Messenger**
+TCP: 443, 5222
+UDP: 3478-3481, 16000-26000
+
+**Instagram (DM/Calls)**
+TCP: 443
+UDP: 3478, 40000-65535
+
+**Snapchat**
+TCP: 443
+UDP: 3478
+
+**imo**
+TCP: 443
+UDP: 3478, 5222
+
+**Botim**
+TCP: 443
+UDP: 3478, 5060-5061
+
+**WeChat**
+TCP: 80, 443, 8080
+UDP: 8000, 8080, 16285
+
+**LINE**
+TCP: 443, 5222, 5228
+UDP: 3478
+
+**KakaoTalk**
+TCP: 443, 5222, 5223
+UDP: —
+
+**Zoom**
+TCP: 443, 8801-8802
+UDP: 3478-3479, 8801-8810
+
+**Microsoft Teams**
+TCP: 443
+UDP: 3478-3481, 50000-50059
+
+**Skype**
+TCP: 443, 80
+UDP: 3478-3481, 50000-60000
+
+**Google Meet**
+TCP: 443
+UDP: 3478, 19302-19309
+
+**Cisco Webex**
+TCP: 443, 5004
+UDP: 9000, 5004, 33434-33598
+
+**Slack**
+TCP: 443
+UDP: 3478, 22466
+
+## 🎬 البث والوسائط
+
+**YouTube**
+TCP: 443, 80
+UDP: 443 (QUIC)
+
+**Netflix**
+TCP: 443, 80
+UDP: —
+
+**TikTok**
+TCP: 443, 80
+UDP: 443 (QUIC)
+
+**Facebook / Instagram (تصفّح)**
+TCP: 443, 80
+UDP: 443 (QUIC)
+
+**Twitter / X**
+TCP: 443, 80
+UDP: —
+
+**Spotify**
+TCP: 443, 4070
+UDP: 4070
+
+**Twitch**
+TCP: 443, 1935
+UDP: —
+
+**Disney+ / Prime Video / Shahid / beIN**
+TCP: 443
+UDP: —
+
+## 🖥️ الوصول عن بُعد / VPN / أدوات
+
+**RDP (ريموت ويندوز)**
+TCP,UDP: 3389
+
+**VNC**
+TCP: 5900-5901
+UDP: —
+
+**SSH**
+TCP: 22
+UDP: —
+
+**FTP**
+TCP: 20, 21
+UDP: —
+
+**TeamViewer**
+TCP: 5938, 443, 80
+UDP: —
+
+**AnyDesk**
+TCP: 6568, 7070, 443
+UDP: —
+
+**Chrome Remote Desktop**
+TCP: 443
+UDP: 3478
+
+**OpenVPN**
+TCP: 443 (TCP mode)
+UDP: 1194
+
+**WireGuard**
+TCP: —
+UDP: 51820
+
+**IPsec / IKEv2**
+TCP: —
+UDP: 500, 4500
+
+**L2TP / IPsec**
+TCP: —
+UDP: 1701, 500, 4500
+
+**PPTP**
+TCP: 1723 (+ بروتوكول GRE 47)
+UDP: —
+
+**SoftEther VPN**
+TCP: 443, 992, 5555
+UDP: 500, 4500
+
+**Shadowsocks**
+TCP,UDP: 8388 (متغيّر)
+
+**Tor**
+TCP: 443, 9001, 9030, 9050
+UDP: —
+
+**Psiphon**
+TCP: 443, 8080 (متغيّر)
+UDP: —
+
+## ✉️ البريد الإلكتروني
+
+**SMTP (إرسال)**
+TCP: 25, 465, 587
+UDP: —
+
+**IMAP (استقبال)**
+TCP: 143, 993
+UDP: —
+
+**POP3 (استقبال)**
+TCP: 110, 995
+UDP: —
+
+
+
+
+
+**BitTorrent / Torrent**
+TCP,UDP: 6881-6889, 6969
