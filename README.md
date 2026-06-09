@@ -38,47 +38,16 @@
 - خدمة DNS مفعّلة على الراوتر (`/ip dns`) حتى تتحوّل الدومينات إلى IP.
 
 ## 📁 محتويات المشروع
-
-| الملف | الوظيفة |
-|------|---------|
-| `address-list.rsc` | قائمة ~390 دومين لمواقع الكشف/السرعة |
-| `layer7-protocol.rsc` | بصمة Layer7 (regex) تمسك كل المواقع عبر SNI |
-| `route.rsc` | جدول التوجيه + المسار عبر خط IQ — **عدّل الـ gateway** |
-| `mangle.rsc` | التصنيف + وسم التوجيه + التعلّم التلقائي |
-| `nat.rsc` | masquerade للترافيك الموجَّه |
-| `filter.rsc` | حظر صفحات إدارة البوابات |
-| `full-setup.rsc` | كل ما سبق (ماعدا القائمة) في ملف واحد |
+متغيرة كل فترة
 
 ## ⚙️ الإعداد (مهم قبل الاستيراد)
 
 افتح `route.rsc` و `full-setup.rsc` وبدّل عنوان البوابة:
-
-```
-gateway=10.10.10.1   →   gateway=<IP بوابة خطك العراقي/المحلي>
-```
-
-لمعرفة العنوان: **Winbox → IP → Routes** (عمود Gateway للخط الثاني)، أو **IP → DHCP Client** إذا كان الخط يأخذ IP تلقائياً.
-
 ## 🚀 طريقة الاستخدام
 
 ### الطريقة 1 — رفع الملفات للراوتر (موصى بها)
 1. في Winbox افتح **Files** واسحب ملفات `.rsc` كلها.
-2. افتح **New Terminal** ونفّذ:
-```
-/import address-list.rsc
-/import full-setup.rsc
-```
-
-### الطريقة 2 — استيراد جزئي (ملف ملف)
-```
-/import address-list.rsc
-/import layer7-protocol.rsc
-/import route.rsc
-/import mangle.rsc
-/import nat.rsc
-/import filter.rsc
-```
-
+2. افتح **New Terminal** 
 ### الطريقة 3 — نسخ ولصق
 افتح أي ملف، انسخ محتواه، والصقه في **New Terminal**.
 
@@ -144,30 +113,8 @@ Ready-to-import MikroTik RouterOS `.rsc` scripts that:
 - A second WAN uplink with a known **gateway IP**.
 - DNS enabled on the router (`/ip dns`).
 
-### Setup
-Edit `route.rsc` / `full-setup.rsc` and replace `gateway=10.10.10.1` with your uplink's gateway IP (Winbox → IP → Routes).
-
-### Usage
-Upload the `.rsc` files via **Winbox → Files**, then in **New Terminal**:
-```
-/import address-list.rsc
-/import full-setup.rsc
-```
-
 ### How it works
 Layer7 reads the SNI → the IP is added to the `Check-Host` address-list → mangle marks the connection with routing-mark `via-IQ` → it is routed via the chosen uplink → masqueraded. Gateway admin pages are blocked separately by the filter rules.
-
-### Project structure
-| File | Purpose |
-|------|---------|
-| `address-list.rsc` | ~390 domains of check/speed sites |
-| `layer7-protocol.rsc` | Layer7 SNI regex (covers all + future sites) |
-| `route.rsc` | Routing table + route via uplink (edit gateway) |
-| `mangle.rsc` | Classify + routing-mark + auto-learn |
-| `nat.rsc` | Masquerade for routed traffic |
-| `filter.rsc` | Block gateway admin pages |
-| `full-setup.rsc` | Everything except the address-list, in one file |
-
 ### Notes
 - CDN-hosted sites share IPs — Layer7 (SNI) is more precise than IP-based routing.
 - Ookla/m-lab speed-test servers use dynamic hostnames — Layer7 catches them, the static list can't.
