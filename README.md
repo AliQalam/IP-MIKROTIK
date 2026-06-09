@@ -1,55 +1,57 @@
-# 🛰️ MikroTik Check-Host Router
+# 🛰️ MikroTik Toolkit — Check-Host & Network Control
 
-**تصنيف وتوجيه (Policy-Routing) لكل مواقع كشف الـ IP / ISP / الموقع الجغرافي / تسريب البيانات / فحص السرعة على راوتر MikroTik — عبر Layer7 (بصمة SNI) + قائمة عناوين ضخمة (~390 موقع) تُحدِّث نفسها تلقائياً.**
+**مجموعة سكربتات MikroTik RouterOS منظّمة بمجلدات: توجيه/كشف مواقع الـ IP / ISP / فحص السرعة، حظر منافذ، حظر واتساب، حظر Starlink، وقواعد RAW.**
 
-> Classify & policy-route every IP / ISP / geolocation / leak / speed-test website on MikroTik using a Layer7 (TLS SNI) signature plus a large self-updating address-list (~390 domains).
+> A modular MikroTik RouterOS toolkit: detect & policy-route IP / ISP / speed-test sites, block ports, block WhatsApp, block Starlink, and RAW firewall rules.
 
-> RouterOS 7 · Layer7 · Policy-Based Routing · ~390 domains · MIT License
+> 🚧 **المشروع في تطوّر مستمر** — تُضاف ملفات ومجلدات بشكل دوري / Continuously evolving.
 
 ---
 
 <div dir="rtl">
 
-## 📖 نظرة عامة
+## 📁 هيكل المشروع
 
-هذا المشروع مجموعة سكربتات `.rsc` جاهزة للاستيراد على **MikroTik RouterOS**، تقوم بـ:
+```
+.
+├── BLOCK/
+│   └── BLOCK-PORT            # حظر منافذ (ports) معيّنة
+├── CHECK-HOST/
+│   ├── Layer7.rsc            # بصمة Layer7 لمواقع كشف IP/ISP/سرعة (SNI)
+│   ├── CHECK-HOST.rsc        # قائمة عناوين ~390 موقع (address-list)
+│   └── BLOCK-IP(STARLINK)    # حظر نطاقات IP الخاصة بـ Starlink
+├── PORT/
+│   └── watsapp-not           # حظر مكالمات/خدمة واتساب
+├── RAW/
+│   └── RAW.rsc               # قواعد RAW بالجدار الناري (قبل connection-tracking)
+└── README.md
+```
 
-- 🔎 **التعرّف** على أكثر من **390 موقعاً** لكشف الـ IP والـ ISP والموقع الجغرافي وفحص السرعة (مثل `speedtest.net`, `fast.com`, `wifiman`, `ipinfo.io`, `whoer.net` ...).
-- 🧠 استخدام **Layer7 (بصمة SNI)** بكلمات مفتاحية ليمسك حتى المواقع **غير المدرجة** بالقائمة — تغطية عملياً لا نهائية تشمل المواقع الجديدة مستقبلاً.
-- 🧭 **توجيه** هذا الترافيك عبر خط إنترنت محدّد (مثلاً الخط المحلي / IQ) باستخدام Policy-Based Routing.
-- 🔁 **بناء القائمة تلقائياً** من ترافيك المستخدمين الحقيقي (`add-dst-to-address-list`).
-- 🔒 **حظر** الوصول إلى صفحات إعدادات المودم/الراوتر (`192.168.100.1` و `192.168.1.1`).
+| المجلد / الملف | الوظيفة | يُستخدم مع |
+|---|---|---|
+| `CHECK-HOST/Layer7.rsc` | يتعرّف على مواقع الكشف/السرعة من اسم الموقع (SNI) | كود الـ Mangle بالأسفل |
+| `CHECK-HOST/CHECK-HOST.rsc` | قائمة ثابتة ~390 دومين | Filter للحظر أو Mangle للتوجيه |
+| `CHECK-HOST/BLOCK-IP(STARLINK)` | حظر/معالجة عناوين Starlink | Filter / Address-list |
+| `BLOCK/BLOCK-PORT` | حظر منافذ محددة | Filter (forward) |
+| `PORT/watsapp-not` | حظر واتساب (منافذ/عناوين) | Filter / Address-list |
+| `RAW/RAW.rsc` | قواعد RAW للأداء/الحماية | Firewall RAW |
 
-## ✨ المميزات
+> 💡 **ملاحظة استيراد:** أمر `/import` يحتاج امتداد `.rsc`. الملفات بدون امتداد (مثل `BLOCK-PORT` و `watsapp-not`) إمّا تعيد تسميتها بـ `.rsc` أو تنسخ محتواها وتلصقه في الـ Terminal.
 
-| | |
-|---|---|
-| 🌐 قائمة ضخمة | ~390 دومين حقيقي، منظّم ونظيف |
-| 🧠 Layer7 ذكي | كلمات مفتاحية = يغطي المواقع الجديدة بلا تحديث |
-| 🔁 تعلّم تلقائي | القائمة تكبر من الترافيك الفعلي |
-| 🧭 توجيه مرن | Policy Routing عبر خط مخصّص (RouterOS 7) |
-| 🔒 حماية البوابات | حظر صفحات إدارة المودم/الراوتر |
-| 🧩 ملفات منفصلة | استيراد كامل أو جزئي |
+---
 
-## 📋 المتطلبات
+## 📦 الوحدة الأساسية: CHECK-HOST
 
-- **MikroTik RouterOS v7** (لأجل التوجيه). الـ Layer7 والقائمة يعملان على v6 أيضاً.
-- خط إنترنت ثانٍ (WAN) مع **IP بوابة (gateway)** معروف — لأجل التوجيه.
-- خدمة DNS مفعّلة على الراوتر (`/ip dns`) حتى تتحوّل الدومينات إلى IP.
+### المكوّنات
+- **`Layer7.rsc`** → بصمة `regexp` تمسك كل مواقع كشف الـ IP/ISP وفحص السرعة من الـ SNI (محمّلة باسم `speedtest`).
+- **`CHECK-HOST.rsc`** → قائمة عناوين ثابتة (`Check-Host`) فيها ~390 دومين.
+- **`BLOCK-IP(STARLINK)`** → حظر نطاقات Starlink.
 
-## 📁 محتويات المشروع
-متغيرة كل فترة
+### 🔁 كود التوجيه (Mangle) — انسخه مباشرة
 
-## ⚙️ الإعداد (مهم قبل الاستيراد)
+> **متى يُستخدم؟** بعد استيراد `Layer7.rsc`. وظيفته: **توجيه** ترافيك مواقع الكشف/السرعة عبر الخط العراقي (IQ) بدل الخط الافتراضي.
 
-افتح `route.rsc` و `full-setup.rsc` وبدّل عنوان البوابة:
-## 🚀 طريقة الاستخدام
-
-### الطريقة 1 — رفع الملفات للراوتر (موصى بها)
-1. في Winbox افتح **Files** واسحب ملفات `.rsc` كلها.
-2. افتح **New Terminal** 
-### الطريقة 3 — نسخ ولصق
-افتح أي ملف، انسخ محتواه، والصقه في **New Terminal**.
+```
 /ip firewall mangle
 # (أ) Layer7 يتعلّم IPات مواقع السرعة ويحطها بقائمة
 add chain=prerouting protocol=tcp dst-port=80,443 layer7-protocol=speedtest \
@@ -63,79 +65,114 @@ add chain=prerouting dst-address-list=Speedtest-IPs connection-mark=no-mark \
 # (ج) الاتصال الموسوم نوجّهه عبر الخط العراقي
 add chain=prerouting connection-mark=speedtest-conn \
     action=mark-routing new-routing-mark=via-IQ passthrough=no
+```
 
+### 🔗 يعتمد على (لازم تكون موجودة وإلا ما يشتغل)
 
-> 💡 ملاحظة: داخل ملفات `.rsc` نستخدم `\\.` (شرطتين). إذا أدخلت الـ regex يدوياً في حقل Winbox اكتب `\.` (شرطة واحدة).
+| المتطلب | الكود |
+|---|---|
+| **Layer7** باسم `speedtest` | من ملف `CHECK-HOST/Layer7.rsc` |
+| **قائمة** `Speedtest-IPs` | تُنشأ تلقائياً من القاعدة (أ) |
+| **جدول التوجيه + المسار** | شوف الكود تحت — **بدّل gateway** |
+| **NAT** | شوف الكود تحت |
 
-## 🔍 كيف يعمل
+```
+# جدول التوجيه + المسار (RouterOS 7) — بدّل 10.10.10.1 بـ gateway خطك العراقي
+/routing table
+add name=via-IQ fib
+/ip route
+add dst-address=0.0.0.0/0 gateway=10.10.10.1 routing-table=via-IQ comment="IQ uplink"
+
+# NAT (تجاهله لو عندك masquerade عام على كل الخطوط)
+/ip firewall nat
+add chain=srcnat connection-mark=speedtest-conn action=masquerade comment="NAT via IQ"
+```
+
+> 💡 **لتوحيد القائمة الثابتة مع المتعلّمة:** بدّل `Speedtest-IPs` بـ `Check-Host` في القاعدتين (أ) و(ب)، حتى تُوجَّه الـ 390 موقع الثابتة أيضاً (مو بس المتعلّمة).
+>
+> 🧱 **للحظر بدل التوجيه:** بدّل القاعدة (ج) بقاعدة Filter:
+> `/ip firewall filter add chain=forward dst-address-list=Speedtest-IPs action=drop`
+
+---
+
+## 🧩 باقي الوحدات (بتطوّر مستمر)
+
+- **BLOCK / BLOCK-PORT** — قواعد Filter لحظر منافذ معيّنة (forward chain).
+- **PORT / watsapp-not** — حظر واتساب عبر منافذه/عناوينه.
+- **RAW / RAW.rsc** — قواعد RAW (تنفّذ قبل connection-tracking، مفيدة للأداء والحماية).
+- **CHECK-HOST / BLOCK-IP(STARLINK)** — قائمة/قواعد لحظر نطاقات Starlink.
+
+---
+
+## ⚙️ الإعداد قبل الاستيراد
+
+1. **بدّل عنوان البوابة** `gateway=10.10.10.1` بـ IP بوابة خطك العراقي (Winbox → IP → Routes).
+2. تأكد **DNS مفعّل** على الراوتر (`/ip dns`) حتى تتحوّل دومينات القائمة إلى IP.
+3. **RouterOS v7** مطلوب لجزء التوجيه (الباقي يعمل على v6 أيضاً).
+
+## 🚀 طريقة الاستخدام
+
+1. Winbox → **Files** → ارفع الملفات (وأعطها امتداد `.rsc`).
+2. **New Terminal** ونفّذ بالترتيب:
+```
+/import file-name=Layer7.rsc
+/import file-name=CHECK-HOST.rsc
+```
+3. الصق كود **Mangle + Route + NAT** من فوق (بعد تعديل الـ gateway).
+4. استورد باقي الوحدات حسب حاجتك (BLOCK-PORT، watsapp-not، RAW.rsc، STARLINK).
+
+> أو ببساطة: افتح أي ملف، انسخ محتواه، والصقه في الـ Terminal.
+
+## 🔍 كيف يعمل (وحدة CHECK-HOST)
 
 ```
 المستخدم يفتح موقع كشف/سرعة
         │
         ▼
-[Layer7] يقرأ اسم الموقع من SNI  ──►  يضيف IP إلى قائمة "Check-Host"
+[Layer7=speedtest] يقرأ SNI ──► يضيف IP إلى قائمة Speedtest-IPs
         │
         ▼
-[Mangle] يوسم الاتصال  ──►  routing-mark = via-IQ
+[Mangle] يوسم الاتصال ──► routing-mark = via-IQ
         │
         ▼
-[Route]  يرسل الترافيك عبر خط IQ
-        │
-        ▼
-[NAT]    masquerade على خط IQ
+[Route] يطلّع الترافيك من الخط العراقي  ──►  [NAT] masquerade
 ```
-وبشكل منفصل: **[Filter]** يحظر صفحات إدارة `192.168.100.1` و `192.168.1.1`.
 
-## ✅ التحقق من العمل
+## ✅ التحقق
 
-- **IP → Firewall → Address Lists**: راقب قائمة `Check-Host` تمتلئ بالـ IPات.
-- **IP → Routes**: عدّاد المسار `via-IQ` يزداد.
-- **IP → Firewall → Mangle**: عدّادات القواعد (Packets/Bytes) تتحرّك.
+- **IP → Firewall → Address Lists** → قائمة `Speedtest-IPs` تمتلئ.
+- **IP → Routes** → عدّاد `via-IQ` يزيد.
+- **IP → Firewall → Mangle** → العدّادات تتحرّك.
 
-## 🩺 حل المشاكل
+## ⚠️ ملاحظات
 
-| المشكلة | الحل |
-|--------|------|
-| CPU مرتفع | Layer7 ثقيل؛ قسّمه على عدة قواعد أو اعتمد على القائمة فقط |
-| لا يوجد توجيه | تأكد أن `gateway` صحيح، وأن DNS يعمل، والإصدار v7 |
-| موقع يتجاوز الفحص | المتصفح يستخدم QUIC (UDP/443)؛ اقفل UDP/443 لإجباره على TLS/TCP |
-| أول اتصال يتسرّب | طبيعي — يُوجَّه ابتداءً من الاتصال الثاني بعد تعلّم الـ IP |
-
-## ⚠️ ملاحظات وتحذيرات
-
-- بعض المواقع على **Cloudflare/CDN** تتشارك نفس الـ IP مع مواقع كثيرة؛ التوجيه بالـ IP قد يؤثر عليها — لذلك **Layer7 (SNI) أدق** لأنه يفرّق بالاسم.
-- سيرفرات قياس السرعة (**Ookla / m-lab**) أسماؤها متغيّرة؛ القائمة الثابتة لا تمسكها كلها، لكن **Layer7 يمسكها**.
-- **STUN** يعمل على **UDP 3478**؛ يحتاج قاعدة منفصلة لو أردت توجيهه.
-- استخدم هذا المشروع على **شبكتك الخاصة** فقط ولأغراض **إدارة الشبكة وهندسة الترافيك المشروعة**.
+- داخل ملفات `.rsc` / الـ Terminal اكتب النقطة `\\.` (شرطتين)؛ في حقل Winbox الرسومي `\.` (شرطة وحدة).
+- تأكد اسم Layer7 (`speedtest`) **يطابق** اللي بالـ Mangle.
+- مواقع Cloudflare/CDN تشترك بالـ IP — التوجيه بالـ IP قد يؤثر على مواقع أخرى.
 
 </div>
 
 ---
 
-## 🇬🇧 English
+## 🇬🇧 English (summary)
 
-### Overview
-Ready-to-import MikroTik RouterOS `.rsc` scripts that:
-- Detect **390+** IP / ISP / geolocation / leak / speed-test websites.
-- Use **Layer7 (TLS SNI)** keyword matching to also catch sites **not** in the list (future-proof, effectively unlimited).
-- **Policy-route** that traffic through a chosen WAN uplink (RouterOS 7).
-- **Auto-grow** the address-list from real user traffic.
-- **Block** access to gateway/modem admin pages.
+Modular MikroTik RouterOS toolkit (🚧 evolving):
 
-### Requirements
-- **RouterOS v7** for the routing part (Layer7 + list also work on v6).
-- A second WAN uplink with a known **gateway IP**.
-- DNS enabled on the router (`/ip dns`).
+| Folder/File | Purpose |
+|---|---|
+| `CHECK-HOST/Layer7.rsc` | Layer7 SNI signature for IP/ISP/speed sites (named `speedtest`) |
+| `CHECK-HOST/CHECK-HOST.rsc` | Static address-list (~390 domains) |
+| `CHECK-HOST/BLOCK-IP(STARLINK)` | Block Starlink IP ranges |
+| `BLOCK/BLOCK-PORT` | Block specific ports |
+| `PORT/watsapp-not` | Block WhatsApp |
+| `RAW/RAW.rsc` | RAW firewall rules |
 
-### How it works
-Layer7 reads the SNI → the IP is added to the `Check-Host` address-list → mangle marks the connection with routing-mark `via-IQ` → it is routed via the chosen uplink → masqueraded. Gateway admin pages are blocked separately by the filter rules.
-### Notes
-- CDN-hosted sites share IPs — Layer7 (SNI) is more precise than IP-based routing.
-- Ookla/m-lab speed-test servers use dynamic hostnames — Layer7 catches them, the static list can't.
-- STUN uses UDP 3478 — add a separate rule if you need it.
+**Mangle (policy-route detected traffic via the IQ uplink) — used together with `Layer7.rsc` (`speedtest`), a `via-IQ` routing table/route, and a masquerade NAT rule.** See the Mangle block above. Requires RouterOS 7 for routing; replace the gateway IP before importing.
+
+> `.rsc` extension is required for `/import`; rename extensionless files or paste their content into the Terminal.
 
 ### Disclaimer
-Intended for networks you **own or administer**, for legitimate traffic-engineering and network-management purposes only.
+For networks you own or administer, for legitimate network-management and traffic-engineering purposes only.
 
 ### License
 [MIT](LICENSE)
