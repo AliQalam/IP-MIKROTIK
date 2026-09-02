@@ -1,0 +1,16 @@
+/ip firewall address-list
+add address=cdn5.albox.co list=Cinema-Box
+add address=cdn6.albox.co list=Cinema-Box
+add address=cdn7.albox.co list=Cinema-Box
+add address=cdn8.albox.co list=Cinema-Box
+add address=cinema.albox.co list=Cinema-Box
+add address=albox.co list=Cinema-Box
+add address=clips.albox.co list=Cinema-Box
+add address=cloud01.albox.co list=Cinema-Box
+add address=cloud02.albox.co list=Cinema-Box
+add address=cloud03.albox.co list=Cinema-Box
+add address=online02.albox.co list=Cinema-Box
+add address=online06.albox.co list=Cinema-Box
+add address=pucinema.albox.co list=Cinema-Box
+add address=statuscheck.albox.co list=Cinema-Box
+add address=cdn4.albox.co list=Cinema-Box

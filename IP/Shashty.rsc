@@ -1,0 +1,12 @@
+/ip firewall address-list
+add address=18.197.99.107 list=Shashty
+add address=34.117.59.81 list=Shashty
+add address=34.117.186.192 list=Shashty
+add address=46.151.64.48 list=Shashty
+add address=46.151.64.58 list=Shashty
+add address=46.151.64.254 list=Shashty
+add address=104.16.160.145 list=Shashty
+add address=104.17.111.223 list=Shashty
+add address=104.21.76.192 list=Shashty
+add address=185.151.107.0/24 list=Shashty
+add address=smart.shashety.com list=Shashty
