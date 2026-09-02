@@ -1,0 +1,15 @@
+/ip firewall address-list
+add address=8.211.42.0/24 list=Super-QI 
+add address=18.165.72.0/24 list=Super-QI 
+add address=34.160.81.0/24 list=Super-QI 
+add address=47.235.21.0/24 list=Super-QI 
+add address=47.235.24.0/24 list=Super-QI 
+add address=47.241.53.0/24 list=Super-QI 
+add address=47.245.131.0/24 list=Super-QI
+add address=63.184.191.0/24 list=Super-QI
+add address=163.181.225.0/24 list=Super-QI
+add address=170.33.12.0/24 list=Super-QI
+add address=216.239.32.0/24 list=Super-QI
+add address=216.239.34.0/24 list=Super-QI
+add address=216.239.36.0/24 list=Super-QI
+add address=216.239.38.0/24 list=Super-QI
