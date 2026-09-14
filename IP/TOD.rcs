@@ -1,0 +1,31 @@
+/ip firewall address-list
+add address=dynaag.tod2.beiniz.biz list=TOD-D
+add address=mobile.useinsider.com list=TOD-D
+add address=android-navigation.tod.tv list=TOD-D
+add address=android-content.tod.tv list=TOD-D
+add address=2c1676ea83dca6b38ce8bbb4c245172172f19363.ipv4.cws.conviva.com \
+    list=TOD-D
+add address=2c1676ea83dca6b38ce8bbb4c245172172f19363.ipv6.cws.conviva.com \
+    list=TOD-D
+add address=android-order.tod.tv list=TOD-D
+add address=android-user.tod.tv list=TOD-D
+add address=2c1676ea83dca6b38ce8bbb4c245172172f19363.appgw.conviva.com list=\
+    TOD-D
+add address=tod.enhance.diagnal.com list=TOD-D
+add address=android-play.tod.tv list=TOD-D
+add address=2c1676ea83dca6b38ce8bbb4c245172172f19363.cws.conviva.com list=\
+    TOD-D
+add address=todtv-live-ent-prod.akamaized.net list=TOD-D
+add address=app.adjust.com list=TOD-D
+add address=time.akamai.com list=TOD-D
+add address=digiturk.live.ott.irdeto.com list=TOD-D
+add address=bein.ra3ncmyg1p.com list=TOD-D
+add address=android-sports.tod.tv list=TOD-D
+add address=android-followme.tod.tv list=TOD-D
+add address=todtv-vod-prod-a-01.akamaized.net list=TOD-D
+add address=tod-preprod.enhance.diagnal.com list=TOD-D
+add address=static-img.tod.tv list=TOD-D
+add address=todtv-live-spo-prod.akamaized.net list=TOD-D
+add address=18.244.87.0/24 list=TOD-D
+add address=18.165.61.0/24 list=TOD-D
+add address=2.18.0.0/16 comment=LIVE-IP list=TOD-D
